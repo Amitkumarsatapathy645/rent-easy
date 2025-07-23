@@ -168,7 +168,7 @@ export default function OwnerDashboardClient({ session }: OwnerDashboardClientPr
                   Add new properties and manage your existing listings
                 </p>
                 <div className="space-y-4">
-                  <Link href="/proproperties/new" className="block">
+                  <Link href="/properties/new" className="block">
                     <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
                       <Plus className="h-5 w-5 mr-2" />
                       List New Property
