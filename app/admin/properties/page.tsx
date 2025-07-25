@@ -1,14 +1,14 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
-import AdminDashboardClient from './admin-client';
+import AdminPropertiesClient from './properties-client';
 
-export default async function AdminDashboard() {
+export default async function AdminPropertiesPage() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'admin') {
-    redirect('/auth/signin?callbackUrl=/admin');
+    redirect('/auth/signin?callbackUrl=/admin/properties');
   }
 
-  return <AdminDashboardClient session={session} />;
+  return <AdminPropertiesClient session={session} />;
 }

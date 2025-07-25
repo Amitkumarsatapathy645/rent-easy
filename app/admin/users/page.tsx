@@ -1,14 +1,14 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
-import AdminDashboardClient from './admin-client';
+import UserManagementClient from './users-client';
 
-export default async function AdminDashboard() {
+export default async function UserManagementPage() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'admin') {
-    redirect('/auth/signin?callbackUrl=/admin');
+    redirect('/auth/signin?callbackUrl=/admin/users');
   }
 
-  return <AdminDashboardClient session={session} />;
+  return <UserManagementClient session={session} />;
 }
