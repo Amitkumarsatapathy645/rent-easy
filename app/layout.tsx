@@ -9,6 +9,12 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'RentEasy - Find Your Perfect Rental Home',
   description: 'Discover thousands of verified rental properties and connect directly with owners. Your dream home is just a click away.',
+  icons: {
+    icon: '/favicon.ico?v=2',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+    
+  },
 };
 
 export default function RootLayout({

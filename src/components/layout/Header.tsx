@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Home, User, LogOut, Plus, Search, Heart, Loader2 } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -20,9 +21,22 @@ export default function Header() {
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center space-x-2">
-            <Home className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">RentEasy</span>
+
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <Image
+                src="/logo.png" 
+                alt="RentEasy Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                RentEasy
+              </h1>
+            </div>
           </Link>
 
           {status === "loading" ? (

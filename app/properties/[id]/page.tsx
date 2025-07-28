@@ -9,6 +9,7 @@ import { Home, AlertCircle, Loader2, Mail, MapPin, Bed, Heart } from 'lucide-rea
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import Image from 'next/image';
+import InquiryForm from '@/components/inquiries/InquiryForm'; // ✅ added import
 
 interface Property {
   _id: string;
@@ -45,6 +46,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [showInquiryForm, setShowInquiryForm] = useState(false); // ✅ added
 
   useEffect(() => {
     fetchProperty();
@@ -60,8 +62,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
 
       if (response.ok) {
         setProperty(data);
-        
-        // Track view
+
         await fetch(`/api/properties/${params.id}/view`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -112,6 +113,20 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     } catch (error) {
       console.error('Error toggling bookmark:', error);
     }
+  };
+
+  const handleInquiry = () => {
+    if (!session) {
+      router.push(`/auth/signin?callbackUrl=/properties/${params.id}`);
+      return;
+    }
+
+    if (session.user.role !== 'tenant') {
+      alert('Only tenants can send inquiries');
+      return;
+    }
+
+    setShowInquiryForm(true); // ✅ show modal
   };
 
   if (loading) {
@@ -256,38 +271,46 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               </CardContent>
             </Card>
 
-            {/* Contact Owner */}
-            {session?.user.role === 'tenant' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contact Owner</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div>
-                      <span className="text-sm text-gray-600">Name:</span>
-                      <span className="ml-2 font-semibold">{property.ownerName}</span>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-600">Email:</span>
-                      <span className="ml-2">{property.ownerEmail}</span>
-                    </div>
-                    {property.ownerPhone && (
-                      <div>
-                        <span className="text-sm text-gray-600">Phone:</span>
-                        <span className="ml-2">{property.ownerPhone}</span>
-                      </div>
-                    )}
+            {/* ✅ Updated Contact Owner Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contact Owner</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 mb-4">
+                  <div>
+                    <span className="text-sm text-gray-600">Name:</span>
+                    <span className="ml-2 font-semibold">{property.ownerName}</span>
                   </div>
-                  <a href={`mailto:${property.ownerEmail}`} className="block mt-4">
-                    <Button className="w-full">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Contact Owner
+                  <div>
+                    <span className="text-sm text-gray-600">Email:</span>
+                    <span className="ml-2">{property.ownerEmail}</span>
+                  </div>
+                  {property.ownerPhone && (
+                    <div>
+                      <span className="text-sm text-gray-600">Phone:</span>
+                      <span className="ml-2">{property.ownerPhone}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Button
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={handleInquiry}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Inquiry
+                  </Button>
+
+                  <a href={`mailto:${property.ownerEmail}`} className="block">
+                    <Button variant="outline" className="w-full">
+                      Direct Email
                     </Button>
                   </a>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -297,6 +320,13 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           </Link>
         </div>
       </div>
+
+      {/* ✅ Inquiry Modal */}
+      {showInquiryForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <InquiryForm property={property} onClose={() => setShowInquiryForm(false)} />
+        </div>
+      )}
     </div>
   );
 }
