@@ -39,7 +39,13 @@ interface Property {
   availableFrom: string;
 }
 
+import { notFound } from 'next/navigation';
+
 export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
+  // Prevent CastError if id is 'new'
+  if (params.id === 'new') {
+    return notFound();
+  }
   const { data: session } = useSession();
   const router = useRouter();
   const [property, setProperty] = useState<Property | null>(null);
